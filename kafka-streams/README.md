@@ -1,3 +1,39 @@
+# To run this sample app
+
+Create Kafka config topic
+
+```
+bin/kafka-topics.sh --create --topic StreamConfig3 --zookeeper localhost:2181 --partitions 2 --replication-factor 1
+```
+
+Publish some configs to the topic (ie. source-topic-name:sink-topic-name)
+```
+bin/kafka-console-producer.sh \                                                                                                                           [15:09:43]
+--broker-list localhost:9092 \
+--topic StreamConfig3 \
+--property "parse.key=true" \
+--property "key.separator=:"
+test-source:test-sink
+test-source2:test-sink2
+```
+
+Package the app
+```
+mvn clean package
+```
+
+Now produce some values to both `test-source` and `test-source2`, on application start-up there should be two `KStream` created, and outputting to the two sink topics. 
+
+```
+java -cp target/streams-examples-3.2.2-standalone.jar io.confluent.examples.streams.MapFunctionScalaExample
+```
+
+But for some reason it only creates one?
+
+
+
+
+
 # Kafka Streams examples [![Build Status](https://travis-ci.org/confluentinc/examples.svg?branch=3.2.x)](https://travis-ci.org/confluentinc/examples)
 
 This sub-folder contains code examples that demonstrate how to implement real-time applications and event-driven
