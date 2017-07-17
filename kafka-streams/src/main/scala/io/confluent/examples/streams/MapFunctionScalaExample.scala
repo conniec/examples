@@ -97,6 +97,11 @@ object MapFunctionScalaExample {
   val APPLICATION_ID = "map-function-scala-example-testing"
   val CONFIG_TOPIC = "StreamConfig3"
 
+
+  def getApplicationId(topic: String): String = {
+    s"$APPLICATION_ID:$topic"
+  }
+
   def main(args: Array[String]) {
 
     val configBuilder = new KStreamBuilder
@@ -130,7 +135,11 @@ object MapFunctionScalaExample {
       val topic = nextValue.key.toString
       val dest = nextValue.value.toString
       println(s"HAS NEXT $topic $dest \n\n\n\n\n\n")
-      val transformer = new StreamTransformer(topic, dest, APPLICATION_ID)
+
+      // Create an application id unique to that topic. Each application id maps to one topic and one transformation, and one KStreamBuilder
+      val applicationId = getApplicationId(topic)
+      println(s"Application id is $applicationId")
+      val transformer = new StreamTransformer(topic, dest, applicationId)
       transformer.run()
     }
     configStream.close()
